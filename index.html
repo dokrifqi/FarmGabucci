@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabucci Farm — Specialist Qurban Cattle</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0F1A12;--bg2:#162013;--bg3:#1D2A1F;--card:#1E2B20;--card2:#243328;--gold:#C6952B;--gold2:#D4A84A;--gold-bg:rgba(198,149,43,0.08);--green:#3D7A52;--green2:#2D5A3D;--gl:#4A9963;--cream:#FAF3E8;--text:#E8E0D4;--t2:#A89F93;--t3:#6B6560;--shadow:rgba(0,0,0,0.3)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;padding-bottom:72px}
+
+.tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--bg2);border-top:1px solid rgba(198,149,43,0.08);backdrop-filter:blur(20px);padding-bottom:env(safe-area-inset-bottom)}
+.tab-bar-inner{display:flex;max-width:600px;margin:0 auto}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 2px 6px;cursor:pointer;transition:all .2s;text-decoration:none}
+.tab-item .ti{font-size:1.2rem;transition:transform .2s}
+.tab-item.active .ti{transform:scale(1.15)}
+.tab-item .tl{font-size:.58rem;font-weight:600;letter-spacing:.3px;color:var(--t3);transition:color .2s}
+.tab-item.active .tl{color:var(--gold)}
+
+.page{display:none;padding-bottom:20px;min-height:100vh}
+.page.active{display:block;animation:pf .3s ease}
+
+.ph{text-align:center;padding:1.5rem 1.5rem 1rem}
+.ph img{width:72px;height:72px;border-radius:50%;border:2px solid rgba(198,149,43,0.2);margin-bottom:.6rem;object-fit:cover}
+.ph h1{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--cream)}
+.ph h1 span{color:var(--gold)}
+.ph .pt{font-family:'Playfair Display',serif;font-size:.82rem;color:var(--t2);font-style:italic;margin-top:.2rem}
+.ph .ps{font-size:.68rem;color:var(--t3);margin-top:.4rem;letter-spacing:1px;text-transform:uppercase}
+
+.pills{display:flex;gap:8px;padding:0 1rem .8rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pills::-webkit-scrollbar{display:none}
+.pill{background:var(--card);border:1px solid rgba(198,149,43,0.1);border-radius:12px;padding:8px 14px;text-align:center;flex-shrink:0;min-width:80px}
+.pill .pn{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--gold)}
+.pill .pl{font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-top:1px}
+
+.stitle{font-family:'Playfair Display',serif;font-size:1rem;color:var(--cream);padding:0 1rem .6rem;max-width:700px;margin:0 auto}
+.stitle .sl{width:36px;height:2px;background:var(--gold);border-radius:2px;margin-top:.4rem}
+
+.frow{display:flex;gap:6px;padding:0 1rem .6rem;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:wrap}
+.frow::-webkit-scrollbar{display:none}
+.fb{padding:6px 14px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:var(--card);font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:500;color:var(--t2);cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.fb.active{background:var(--green);color:#fff;border-color:var(--green)}
+
+.sort-row{display:flex;gap:6px;padding:0 1rem .6rem;align-items:center}
+.sort-row span{font-size:.7rem;color:var(--t3)}
+.sb{padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.06);background:var(--card);font-family:'DM Sans',sans-serif;font-size:.68rem;color:var(--t2);cursor:pointer;transition:all .2s}
+.sb.active{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:600}
+
+.swrap{padding:0 1rem .6rem;position:relative}
+.swrap input{width:100%;padding:9px 14px 9px 32px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:var(--card);font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--text);outline:none}
+.swrap input::placeholder{color:var(--t3)}
+.swrap::before{content:'🔍';position:absolute;left:22px;top:50%;transform:translateY(-50%);font-size:.7rem}
+
+.cbar{text-align:center;font-size:.7rem;color:var(--t3);padding-bottom:.4rem}
+
+.grid{padding:0 1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;max-width:1200px;margin:0 auto}
+.cow{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);transition:transform .3s;cursor:pointer}
+.cow:hover{transform:translateY(-3px)}
+.cow-img{position:relative;height:200px;overflow:hidden;background:var(--bg3)}
+.cow-img img{width:100%;height:100%;object-fit:cover;object-position:center 30%;transition:transform .5s}
+.cow:hover .cow-img img{transform:scale(1.04)}
+.cow-noimg{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--t3);font-size:.75rem;gap:4px}
+.cow-noimg span{font-size:2rem}
+.badges{position:absolute;top:8px;left:8px;display:flex;gap:4px;flex-wrap:wrap}
+.cb{padding:3px 9px;border-radius:16px;font-size:.6rem;font-weight:600;letter-spacing:.3px;text-transform:uppercase;backdrop-filter:blur(6px)}
+.cb-kiloan{background:rgba(41,102,255,.8);color:#fff}.cb-tetap{background:rgba(198,149,43,.85);color:#fff}.cb-jogrog{background:rgba(156,39,176,.8);color:#fff}.cb-terjual{background:rgba(100,100,100,.85);color:#fff}.cb-betina{background:rgba(233,30,99,.8);color:#fff}
+.ctag{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.5);color:#fff;padding:3px 8px;border-radius:12px;font-size:.6rem;backdrop-filter:blur(4px)}
+.cbody{padding:1rem}
+.ctop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cname{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--cream)}
+.cprice{font-size:.68rem;font-weight:600;color:var(--gl);background:rgba(61,122,82,0.12);padding:3px 8px;border-radius:12px;max-width:50%;text-align:right}
+.cspecs{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+.cs{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--t2)}
+.csi{width:22px;height:22px;border-radius:5px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0}
+.cst span{display:block;font-size:.55rem;color:var(--t3);text-transform:uppercase;letter-spacing:.3px}
+.cket{font-size:.68rem;color:var(--t3);padding:6px 0;border-top:1px solid rgba(255,255,255,0.04);margin-bottom:8px}
+.cacts{display:flex;gap:6px}
+.bwa{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px;border-radius:8px;background:#25D366;color:#fff;font-weight:600;font-size:.75rem;text-decoration:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.bdt{padding:9px 12px;border-radius:8px;background:var(--bg3);color:var(--t2);font-weight:600;font-size:.75rem;border:1px solid rgba(255,255,255,0.05);cursor:pointer;font-family:'DM Sans',sans-serif}
+.cow-sold{opacity:.45;filter:grayscale(40%)}
+
+.disc{text-align:center;padding:.8rem;font-size:.68rem;color:var(--t3);font-style:italic}
+.disc a{color:var(--gl);font-weight:600;text-decoration:none}
+
+.icards{padding:0 1rem;display:grid;gap:10px;max-width:600px;margin:0 auto .8rem}
+.ic{background:var(--card);border-radius:10px;padding:1rem;border-left:3px solid var(--gold)}
+.ic h3{font-size:.85rem;color:var(--cream);margin-bottom:.2rem}
+.ic p{font-size:.72rem;color:var(--t2);line-height:1.5}
+
+.kgrid{padding:0 1rem;display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:600px;margin:0 auto .8rem}
+.kg{background:var(--card);border-radius:10px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.03)}
+.kg .ki{font-size:1.3rem;margin-bottom:.3rem}
+.kg h3{font-size:.8rem;color:var(--cream);margin-bottom:.2rem}
+.kg p{font-size:.65rem;color:var(--t2);line-height:1.4}
+
+.cta{margin:1rem;padding:1.5rem;background:var(--card);border-radius:14px;text-align:center;border:1px solid rgba(198,149,43,0.08)}
+.cta img{width:50px;height:50px;border-radius:50%;margin-bottom:.8rem;border:1.5px solid rgba(198,149,43,0.15);object-fit:cover}
+.cta h2{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);margin-bottom:.3rem}
+.cta .ctg{font-style:italic;color:var(--t3);font-size:.78rem;margin-bottom:.3rem}
+.cta .ca{font-size:.68rem;color:var(--t2);line-height:1.5;margin-bottom:.8rem}
+.cta .ca a{color:var(--gold);text-decoration:none}
+.cbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.cwab{padding:10px 24px;border-radius:30px;background:#25D366;color:#fff;font-weight:600;font-size:.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.ctel{padding:10px 24px;border-radius:30px;border:1px solid rgba(255,255,255,0.1);color:var(--t2);font-size:.85rem;text-decoration:none}
+.ft{text-align:center;padding:1.5rem 1rem;font-size:.65rem;color:var(--t3)}
+.ft a{color:var(--gold);text-decoration:none;opacity:.6}
+
+/* Fiqih */
+.flist{padding:0 1rem;max-width:700px;margin:0 auto}
+.fq{background:var(--card);border-radius:12px;margin-bottom:8px;border:1px solid rgba(255,255,255,0.03);overflow:hidden}
+.fqh{display:flex;align-items:center;gap:10px;padding:.9rem 1rem;cursor:pointer;transition:background .2s}
+.fqh:hover{background:var(--card2)}
+.fqn{width:28px;height:28px;border-radius:8px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0}
+.fqt{flex:1}
+.fqt h3{font-size:.9rem;color:var(--cream)}
+.fqt p{font-size:.62rem;color:var(--t3);margin-top:1px}
+.fqa{color:var(--t3);font-size:.8rem;transition:transform .3s}
+.fq.open .fqa{transform:rotate(180deg)}
+.fqc{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.fq.open .fqc{max-height:3000px}
+.fqi{padding:0 1rem 1rem;border-top:1px solid rgba(255,255,255,0.03)}
+.fqi p{font-size:.78rem;color:var(--t2);line-height:1.7;margin-top:.5rem}
+.fqi strong{color:var(--cream)}
+.fqd{font-size:.68rem;color:var(--gl);font-style:italic;margin-top:.6rem;padding-top:.5rem;border-top:1px solid rgba(255,255,255,0.03)}
+
+/* Resep */
+.rlist{padding:0 1rem;max-width:700px;margin:0 auto}
+.rp{background:var(--card);border-radius:12px;margin-bottom:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+.rph{display:flex;align-items:center;gap:10px;padding:.9rem 1rem;cursor:pointer;transition:background .2s}
+.rph:hover{background:var(--card2)}
+.rpe{font-size:1.4rem;flex-shrink:0}
+.rpt{flex:1}
+.rpt h3{font-size:.9rem;color:var(--gold)}
+.rpt p{font-size:.62rem;color:var(--t3);margin-top:1px}
+.rpa{color:var(--t3);font-size:.8rem;transition:transform .3s}
+.rp.open .rpa{transform:rotate(180deg)}
+.rpc{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.rp.open .rpc{max-height:4000px}
+.rpi{padding:0 1rem 1rem;border-top:1px solid rgba(255,255,255,0.03)}
+.rpi h4{font-size:.75rem;font-weight:600;color:var(--cream);margin-top:.7rem;margin-bottom:.3rem}
+.rpi ul{font-size:.72rem;color:var(--t2);line-height:1.6;padding-left:1.1rem}
+.rpi li{margin-bottom:2px}
+.rs{counter-reset:s;list-style:none;padding-left:0!important}
+.rs li{counter-increment:s;padding-left:1.8rem;position:relative;margin-bottom:6px}
+.rs li::before{content:counter(s);position:absolute;left:0;width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:.58rem;font-weight:700;display:flex;align-items:center;justify-content:center;top:2px}
+.rtip{font-size:.68rem;color:var(--gl);font-style:italic;margin-top:.6rem;padding:.6rem;background:rgba(61,122,82,0.08);border-radius:6px}
+
+/* Rekomendasi */
+.reko-section{padding:0 1rem;max-width:700px;margin:0 auto}
+.reko-intro{background:var(--card);border-radius:14px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(198,149,43,0.08);text-align:center}
+.reko-intro h2{font-family:'Playfair Display',serif;font-size:1rem;color:var(--cream);margin-bottom:.5rem;line-height:1.4}
+.reko-intro p{font-size:.78rem;color:var(--t2);line-height:1.6}
+.reko-cat{margin-bottom:1.2rem}
+.reko-cat-header{display:flex;align-items:center;gap:8px;margin-bottom:.6rem}
+.reko-cat-header span{font-size:1.2rem}
+.reko-cat-header h3{font-size:.9rem;color:var(--cream)}
+.reko-cat-desc{font-size:.72rem;color:var(--t3);margin-bottom:.6rem;padding-left:2rem}
+.reko-item{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:10px;padding:.8rem 1rem;margin-bottom:6px;border:1px solid rgba(255,255,255,0.03);text-decoration:none;transition:all .2s}
+.reko-item:hover{background:var(--card2);border-color:rgba(198,149,43,0.15);transform:translateX(4px)}
+.reko-item .ri-icon{font-size:1.2rem;flex-shrink:0}
+.reko-item .ri-text{flex:1}
+.reko-item .ri-text h4{font-size:.82rem;color:var(--cream);margin-bottom:1px}
+.reko-item .ri-text p{font-size:.65rem;color:var(--t3)}
+.reko-item .ri-arrow{color:var(--gold);font-size:.8rem}
+.reko-closing{background:var(--card);border-radius:14px;padding:1.2rem;text-align:center;margin-top:1rem;border:1px solid rgba(198,149,43,0.08)}
+.reko-closing p{font-size:.78rem;color:var(--t2);line-height:1.6}
+.reko-closing .rc-sign{font-size:.72rem;color:var(--gold);margin-top:.5rem;font-weight:600}
+
+/* Support */
+.support-section{padding:0 1rem;max-width:700px;margin:0 auto}
+.support-intro{background:var(--card);border-radius:14px;padding:2rem 1.5rem;text-align:center;margin-bottom:1rem;border:1px solid rgba(198,149,43,0.08)}
+.support-intro h2{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);margin-bottom:.5rem}
+.support-intro p{font-size:.8rem;color:var(--t2);line-height:1.6;margin-bottom:1rem}
+.support-cta{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:30px;background:var(--gold);color:var(--bg);font-weight:600;font-size:.9rem;text-decoration:none;transition:all .2s}
+.support-cta:hover{background:var(--gold2);transform:translateY(-2px)}
+.brand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:1rem}
+.brand-card{background:var(--card);border-radius:12px;padding:1.2rem;text-align:center;border:1px solid rgba(255,255,255,0.03);transition:transform .2s}
+.brand-card:hover{transform:translateY(-2px)}
+.brand-card img{width:50px;height:50px;border-radius:50%;object-fit:cover;margin-bottom:.5rem;border:1.5px solid rgba(198,149,43,0.15)}
+.brand-card h4{font-size:.78rem;color:var(--cream);margin-bottom:2px}
+.brand-card p{font-size:.6rem;color:var(--t3)}
+.brand-card a{display:inline-block;margin-top:.4rem;font-size:.65rem;color:var(--gold);text-decoration:none;font-weight:600}
+.empty-brand{font-size:.75rem;color:var(--t3);text-align:center;padding:2rem;font-style:italic}
+
+/* Takbir */
+.tkb{position:fixed;bottom:80px;right:1rem;z-index:99;width:46px;height:46px;border-radius:50%;background:var(--green);color:#fff;border:none;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 16px rgba(45,90,61,0.5);transition:all .3s;display:flex;align-items:center;justify-content:center}
+.tkb.playing{background:#C0392B}
+
+/* Modal */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.mo.active{display:flex}
+.ml{background:var(--card);border-radius:18px;max-width:480px;width:100%;max-height:85vh;overflow-y:auto;animation:pf .3s;border:1px solid rgba(255,255,255,0.05)}
+.ml-img{width:100%;height:260px;object-fit:cover;object-position:center 30%;border-radius:18px 18px 0 0}
+.ml-noimg{width:100%;height:140px;background:var(--bg3);border-radius:18px 18px 0 0;display:flex;align-items:center;justify-content:center;font-size:2.2rem}
+.ml-body{padding:1.3rem}
+.ml-body h2{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--cream);margin-bottom:3px}
+.ml-body .mid{font-size:.7rem;color:var(--t3);margin-bottom:.8rem}
+.mspecs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:.8rem}
+.ms{background:var(--bg3);border-radius:8px;padding:8px;text-align:center}
+.ms .msl{font-size:.55rem;text-transform:uppercase;letter-spacing:.3px;color:var(--t3)}
+.ms .msv{font-family:'Playfair Display',serif;font-size:.85rem;font-weight:700;color:var(--cream);margin-top:1px}
+.ml-desc{font-size:.78rem;color:var(--t2);line-height:1.6;border-top:1px solid rgba(255,255,255,0.04);padding-top:.6rem;margin-bottom:.8rem}
+.mcl{position:absolute;top:.7rem;right:.7rem;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+.nores{grid-column:1/-1;text-align:center;padding:2.5rem;color:var(--t3)}
+.nores span{font-size:2.5rem;display:block;margin-bottom:.6rem}
+@keyframes pf{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){.grid{grid-template-columns:1fr}.mspecs{grid-template-columns:1fr 1fr}.cow-img{height:180px}}
+</style>
+</head>
+<body>
+
+<!-- TAB BAR (BOTTOM) -->
+<div class="tab-bar"><div class="tab-bar-inner">
+  <div class="tab-item active" onclick="showP('home',this)"><div class="ti">🐄</div><div class="tl">Gabucci</div></div>
+  <div class="tab-item" onclick="showP('fiqih',this)"><div class="ti">📖</div><div class="tl">Fiqih</div></div>
+  <div class="tab-item" onclick="showP('resep',this)"><div class="ti">🍳</div><div class="tl">Resep</div></div>
+  <div class="tab-item" onclick="showP('reko',this)"><div class="ti">⭐</div><div class="tl">Rekomendasi</div></div>
+  <div class="tab-item" onclick="showP('support',this)"><div class="ti">💛</div><div class="tl">Support</div></div>
+</div></div>
+
+<!-- ══ PAGE: HOME ══ -->
+<div class="page active" id="page-home">
+  <div class="ph"><img src="logo-gabucci.jpg" alt="Gabucci Farm"><h1><span>Gabucci</span> Farm</h1><div class="pt">"Siapkan Kendaraan Terbaik Menuju Ridha Ilahi"</div><div class="ps">Specialist Qurban Cattle · Est. 2020</div></div>
+  <div class="pills"><div class="pill"><div class="pn">35</div><div class="pl">Tersedia</div></div><div class="pill"><div class="pn">229-975</div><div class="pl">Berat (kg)</div></div><div class="pill"><div class="pn">19-110</div><div class="pl">Juta Rupiah</div></div><div class="pill"><div class="pn">100%</div><div class="pl">Sehat</div></div></div>
+  <div class="stitle">Katalog Sapi Qurban<div class="sl"></div></div>
+  <div class="frow" id="filterRow">
+    <button class="fb active" onclick="fC('semua',this)">Semua</button><button class="fb" onclick="fC('kiloan',this)">Kiloan</button><button class="fb" onclick="fC('tetap',this)">Harga Tetap</button><button class="fb" onclick="fC('jogrog',this)">Jogrog</button><button class="fb" onclick="fC('betina',this)">Betina</button><button class="fb" onclick="fC('terjual',this)">Terjual</button>
+  </div>
+  <div class="sort-row"><span>Urutkan:</span><button class="sb active" onclick="sC('default',this)">Default</button><button class="sb" onclick="sC('low',this)">Harga ↑</button><button class="sb" onclick="sC('high',this)">Harga ↓</button><button class="sb" onclick="sC('heavy',this)">Berat ↓</button></div>
+  <div class="swrap"><input type="text" id="sI" placeholder="  Cari nomor tag sapi..." oninput="searchC()"></div>
+  <div class="cbar" id="cB"></div>
+  <div class="grid" id="cG"></div>
+  <div class="disc">⚠️ Update stok tidak realtime 100%. <a href="https://wa.me/6281370719873?text=Halo%20Gabucci%20Farm,%20cek%20ketersediaan%20sapi">💬 Hubungi Admin</a></div>
+  <div class="stitle" style="margin-top:.8rem">Keterangan Harga<div class="sl"></div></div>
+  <div class="icards"><div class="ic" style="border-left-color:#2966FF"><h3>🔵 Kiloan</h3><p>Harga berdasarkan berat per kg. Final saat penimbangan H-1.</p></div><div class="ic"><h3>🟡 Harga Tetap</h3><p>Harga sudah pasti, tidak berubah.</p></div><div class="ic" style="border-left-color:#9C27B0"><h3>🟣 Jogrog</h3><p>Harga ditentukan langsung di lokasi.</p></div></div>
+  <div class="stitle">Keunggulan<div class="sl"></div></div>
+  <div class="kgrid"><div class="kg"><div class="ki">🏥</div><h3>Sehat</h3><p>Vaksinasi lengkap</p></div><div class="kg"><div class="ki">⚖️</div><h3>Terukur</h3><p>Timbang rutin</p></div><div class="kg"><div class="ki">📸</div><h3>Foto Asli</h3><p>Survey langsung</p></div><div class="kg"><div class="ki">🕌</div><h3>Syar'i</h3><p>Syarat qurban OK</p></div></div>
+  <div class="cta"><img src="logo-gabucci.jpg"><h2>Siap Berqurban?</h2><div class="ctg">"Siapkan Kendaraan Terbaik Menuju Ridha Ilahi"</div><div class="ca">📍 Jl. Cipanas Galunggung No.16, Tawangbanteng, Sukaratu, Tasikmalaya 46415<br><a href="https://maps.app.goo.gl/pG5DCVZBmqdr6yPiI" target="_blank">📌 Google Maps →</a></div><div class="cbtns"><a href="https://wa.me/6281370719873?text=Halo%20Gabucci%20Farm,%20saya%20ingin%20pesan%20sapi%20qurban" class="cwab">💬 WhatsApp</a><a href="tel:+6281370719873" class="ctel">📞 0813-7071-9873</a></div></div>
+  <div class="ft"><p>&copy; 2026 Gabucci Farm · Est. 2020</p></div>
+</div>
+
+<!-- ══ PAGE: FIQIH ══ -->
+<div class="page" id="page-fiqih">
+  <div class="ph"><div style="font-size:2.2rem;margin-bottom:.4rem">📖</div><h1>Fiqih <span>Qurban</span></h1><div class="pt">Panduan ibadah qurban sesuai syariat</div></div>
+  <div class="flist">
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fqh"><div class="fqn">1</div><div class="fqt"><h3>Hikmah Berqurban</h3><p>Kisah Nabi Ibrahim & Ismail AS</p></div><div class="fqa">▼</div></div><div class="fqc"><div class="fqi"><p>Ibadah qurban menghidupkan sunnah Nabi Ibrahim AS. Ismail adalah anak yang sangat dinantikan setelah puluhan tahun, dan saat perintah turun ia baru beranjak dewasa.</p><p>Perintah datang melalui mimpi — tingkatan wahyu terendah — namun beliau <strong>langsung bergegas tanpa ragu</strong>. Ismail pun menerima dengan penuh keikhlasan.</p><p>Saat pisau diayunkan, Allah <strong>menggantinya dengan seekor domba</strong>. Peristiwa ini terjadi 10 Dzulhijjah yang menjadi syariat qurban.</p><p>Qurban adalah <strong>syiar agama</strong> — dilakukan terbuka, namun pelaku harus ikhlas. Daging dibagi: ⅓ dimakan, ⅓ fakir miskin, ⅓ kerabat/tetangga.</p><div class="fqd">📜 "Maka shalatlah untuk Tuhanmu dan berkurbanlah." — QS. Al-Kautsar: 2</div></div></div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fqh"><div class="fqn">2</div><div class="fqt"><h3>Qurban Atas Nama yang Wafat</h3><p>Perbedaan pendapat ulama</p></div><div class="fqa">▼</div></div><div class="fqc"><div class="fqi"><p><strong>Jumhur Ulama</strong> (Hanafiyah, Malikiyah, Hanabilah) membolehkan — diqiyaskan dengan sedekah atas nama mayat.</p><p><strong>Mazhab Syafi'i</strong> tidak membolehkan kecuali si mayat pernah berwasiat. Ibadah menyembelih berbeda esensinya dengan sedekah.</p><div class="fqd">📜 Konsultasikan dengan ustadz kepercayaan Anda</div></div></div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fqh"><div class="fqn">3</div><div class="fqt"><h3>Urutan Keutamaan Hewan</h3><p>Unta, sapi, atau kambing?</p></div><div class="fqa">▼</div></div><div class="fqc"><div class="fqi"><p><strong>①</strong> Unta (1 ekor/1 orang) → <strong>②</strong> Sapi (1 ekor/1 orang) → <strong>③</strong> Kambing (1 ekor/1 orang)</p><p><strong>1 kambing untuk 1 orang</strong> jauh lebih afdal dibanding patungan 1/7 sapi. Namun yang terpenting adalah <strong>niat dan keikhlasan</strong>.</p><div class="fqd">📜 Rasulullah SAW berqurban dengan kambing untuk kemudahan umatnya</div></div></div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fqh"><div class="fqn">4</div><div class="fqt"><h3>Syarat Umur Hewan Qurban</h3><p>Kambing, sapi, kerbau, unta</p></div><div class="fqa">▼</div></div><div class="fqc"><div class="fqi"><p><strong>🐑 Kambing/Domba:</strong> Min. 1 tahun (masuk tahun ke-2)<br><strong>🐄 Sapi/Kerbau:</strong> Min. 2 tahun (masuk tahun ke-3), lebih aman 3 tahun<br><strong>🐪 Unta:</strong> Min. 5 tahun</p><p>Pengecualian hanya jika benar-benar <strong>kesulitan menemukan</strong> hewan cukup umur.</p><div class="fqd">📜 HR. Muslim no. 1963 dari Jabir bin Abdullah RA</div></div></div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fqh"><div class="fqn">5</div><div class="fqt"><h3>Cacat yang Membatalkan</h3><p>4 cacat haram & cacat ringan</p></div><div class="fqa">▼</div></div><div class="fqc"><div class="fqi"><p><strong>①</strong> Buta permanen · <strong>②</strong> Sakit parah · <strong>③</strong> Pincang parah permanen · <strong>④</strong> Sangat kurus/tidak berdaging</p><p>Cacat ringan (goresan tanduk, lecet sementara) hukumnya hanya <strong>makruh</strong>.</p><div class="fqd">📜 HR. Abu Dawud, dari Al-Bara' bin 'Azib RA</div></div></div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fqh"><div class="fqn">6</div><div class="fqt"><h3>Ketaqwaan: Inti Ibadah</h3><p>Yang sampai kepada Allah</p></div><div class="fqa">▼</div></div><div class="fqc"><div class="fqi"><p style="font-style:italic;color:var(--gl)">"Daging dan darahnya tidak sampai kepada Allah, tetapi yang sampai adalah ketaqwaan dari kalian."</p><p>Allah menerima qurban dari yang <strong>bersungguh-sungguh memilih hewan terbaik</strong>. Diharamkan sengaja mencari hewan cacat/terburuk hanya demi harga murah.</p><div class="fqd">📜 QS. Al-Hajj: 37 dan QS. Al-Ma'idah: 27</div></div></div></div>
+    <div class="fq" onclick="this.classList.toggle('open')"><div class="fqh"><div class="fqn">7</div><div class="fqt"><h3>Kebersihan Harta & Perantara Doa</h3><p>Harta halal, menabung, wasilah</p></div><div class="fqa">▼</div></div><div class="fqc"><div class="fqi"><p>Harta harus <strong>halal</strong> — tidak boleh dari korupsi, pencurian, atau riba. Dianjurkan <strong>menabung khusus</strong> — alihkan kebiasaan buruk (misal uang rokok) jadi tabungan qurban.</p><p>Berqurban dapat menjadi <strong>wasilah mendekatkan diri kepada Allah</strong> dan mempercepat terkabulnya doa.</p><p style="font-weight:600;color:var(--gold)">Sesuaikan kemampuan, namun berikhtiarlah mencari yang terbaik.</p><div class="fqd">📜 QS. Al-Ma'idah: 35</div></div></div></div>
+  </div>
+  <div class="cta" style="margin-top:1rem"><h2>Sudah Mantap?</h2><div class="cbtns" style="margin-top:.6rem"><a href="https://wa.me/6281370719873" class="cwab">💬 Pesan Sekarang</a></div></div>
+  <div class="ft"><p>&copy; 2026 Gabucci Farm</p></div>
+</div>
+
+<!-- ══ PAGE: RESEP ══ -->
+<div class="page" id="page-resep">
+  <div class="ph"><div style="font-size:2.2rem;margin-bottom:.4rem">🍳</div><h1>Resep <span>Mantap</span></h1><div class="pt">Inspirasi olahan daging sapi qurban</div></div>
+  <div class="rlist">
+    <div class="rp" onclick="this.classList.toggle('open')"><div class="rph"><div class="rpe">🍛</div><div class="rpt"><h3>Rendang</h3><p>Masakan Padang · 3-4 Jam</p></div><div class="rpa">▼</div></div><div class="rpc"><div class="rpi"><h4>Bahan</h4><ul><li>1 kg daging sapi, 400 ml santan kental, 600 ml santan encer</li><li>3 serai, 4 daun jeruk, 2 daun kunyit, 1 asam kandis</li><li>Bumbu: 15 cabai merah, 8 bawang merah, 6 bawang putih, jahe, lengkuas, kunyit</li></ul><h4>Cara Masak</h4><ol class="rs"><li>Tumis bumbu halus dengan serai, daun jeruk, daun kunyit</li><li>Masukkan daging, aduk rata</li><li>Tuang santan encer, masak api sedang</li><li>Menyusut → masukkan santan kental & asam kandis</li><li>Kecilkan api, aduk terus hingga kering & coklat kehitaman</li></ol></div></div></div>
+    <div class="rp" onclick="this.classList.toggle('open')"><div class="rph"><div class="rpe">🥩</div><div class="rpt"><h3>Sate Bumbu Kacang</h3><p>Favorit Keluarga · 1 Jam</p></div><div class="rpa">▼</div></div><div class="rpc"><div class="rpi"><h4>Bahan</h4><ul><li>500 gr daging dadu 2cm, 20 tusuk, 2 sdm kecap manis</li><li>Bumbu kacang: 150 gr kacang goreng, 5 cabai, 3 bawang putih, kecap, air asam</li></ul><h4>Cara Masak</h4><ol class="rs"><li>Marinasi daging dengan kecap 30 menit, tusuk</li><li>Buat bumbu kacang: tumis cabai & bawang, tambah kacang halus & air</li><li>Bakar sate di arang, oles kecap & minyak</li><li>Sajikan dengan bumbu kacang & lontong</li></ol></div></div></div>
+    <div class="rp" onclick="this.classList.toggle('open')"><div class="rph"><div class="rpe">🥘</div><div class="rpt"><h3>Rawon</h3><p>Jawa Timur · 2 Jam</p></div><div class="rpa">▼</div></div><div class="rpc"><div class="rpi"><h4>Bahan</h4><ul><li>750 gr daging sandung lamur, 3 kluwek, 2 liter air</li><li>Bumbu: 8 bawang merah, 5 bawang putih, 5 cabai, kemiri, kunyit, jahe</li></ul><h4>Cara Masak</h4><ol class="rs"><li>Rebus daging empuk ±1 jam, sisihkan kaldu</li><li>Tumis bumbu, masukkan kluwek halus</li><li>Tuang ke kaldu + daging, masak 45 menit</li><li>Sajikan dengan nasi, tauge, telur asin</li></ol></div></div></div>
+    <div class="rp" onclick="this.classList.toggle('open')"><div class="rph"><div class="rpe">🍲</div><div class="rpt"><h3>Gulai</h3><p>Khas Nusantara · 1.5 Jam</p></div><div class="rpa">▼</div></div><div class="rpc"><div class="rpi"><h4>Bahan</h4><ul><li>750 gr daging, 500 ml santan kental, 500 ml santan encer, kentang</li><li>Bumbu: 10 cabai, 8 bawang merah, 5 bawang putih, kunyit, jahe, ketumbar</li></ul><h4>Cara Masak</h4><ol class="rs"><li>Tumis bumbu, masukkan daging</li><li>Tuang santan encer, masak empuk ±1 jam</li><li>Tambah kentang & santan kental, masak mengental</li></ol></div></div></div>
+    <div class="rp" onclick="this.classList.toggle('open')"><div class="rph"><div class="rpe">🥓</div><div class="rpt"><h3>Empal</h3><p>Gurih & Manis · 1.5 Jam</p></div><div class="rpa">▼</div></div><div class="rpc"><div class="rpi"><h4>Bahan</h4><ul><li>500 gr daging iris tipis, 400 ml santan, kecap manis, gula merah</li><li>Bumbu: bawang merah, bawang putih, lengkuas, jahe, ketumbar</li></ul><h4>Cara Masak</h4><ol class="rs"><li>Rebus empuk, pipihkan</li><li>Masak bumbu + santan + kecap + gula merah</li><li>Masukkan daging, masak sampai kering</li><li>Goreng hingga kecoklatan</li></ol></div></div></div>
+    <div class="rp" onclick="this.classList.toggle('open')"><div class="rph"><div class="rpe">🫕</div><div class="rpt"><h3>Tongseng</h3><p>Pedas & Segar · 1 Jam</p></div><div class="rpa">▼</div></div><div class="rpc"><div class="rpi"><h4>Bahan</h4><ul><li>500 gr daging, 200 gr kol, tomat, cabai hijau, 400 ml santan, kecap manis</li><li>Bumbu: bawang merah, bawang putih, cabai merah, jahe, merica, ketumbar</li></ul><h4>Cara Masak</h4><ol class="rs"><li>Tumis bumbu, masukkan daging</li><li>Tambah air, masak empuk</li><li>Tuang santan & kecap, masukkan sayuran</li><li>Sajikan dengan nasi/lontong</li></ol></div></div></div>
+    <div class="rp" onclick="this.classList.toggle('open')"><div class="rph"><div class="rpe">🥩</div><div class="rpt"><h3>Steak Daging Sapi</h3><p>Western Style · 30 Menit</p></div><div class="rpa">▼</div></div><div class="rpc"><div class="rpi"><h4>Bahan</h4><ul><li>500 gr has dalam/sirloin tebal 2-3 cm, mentega, bawang putih, rosemary</li><li>Saus: mentega, tepung, kaldu sapi, kecap inggris, lada hitam</li></ul><h4>Cara Masak</h4><ol class="rs"><li>Diamkan daging suhu ruang 30 menit, keringkan</li><li>Olesi minyak, taburi garam & lada hitam</li><li>Pan panas besar — masak 3-4 menit tiap sisi</li><li>Tambah mentega + bawang putih + rosemary, basting</li><li>Angkat, tutup foil, rest 5 menit</li><li>Buat saus lada hitam di pan yang sama</li></ol><div class="rtip">💡 Ketebalan 2-3 cm agar bagian dalam tetap juicy</div></div></div></div>
+    <div class="rp" onclick="this.classList.toggle('open')"><div class="rph"><div class="rpe">🔥</div><div class="rpt"><h3>Sate Maranggi</h3><p>Khas Purwakarta · 1.5 Jam</p></div><div class="rpa">▼</div></div><div class="rpc"><div class="rpi"><h4>Bumbu Marinasi</h4><ul><li>8 bawang merah, 6 bawang putih, jahe, kunyit, ketumbar</li><li>100 gr gula merah, 3 sdm kecap manis, air asam jawa</li></ul><h4>Cara Masak</h4><ol class="rs"><li>Haluskan bumbu, campurkan dengan gula merah & kecap</li><li>Rendam daging min. 2 jam, idealnya semalaman</li><li>Tusuk, bakar di arang sambil dioles sisa bumbu</li><li>Bakar 8-10 menit hingga karamelisasi</li></ol><h4>Sambal Oncom</h4><ol class="rs"><li>Bakar cabai rawit, bawang, tomat hijau</li><li>Ulek kasar bersama oncom kukus</li></ol><div class="rtip">💡 Marinasi semalaman + gula merah = karamelisasi sempurna!</div></div></div></div>
+  </div>
+  <div class="cta" style="margin-top:1rem"><h2>Butuh Daging Segar?</h2><div class="cbtns" style="margin-top:.6rem"><a href="https://wa.me/6281370719873" class="cwab">💬 Pesan Sapi</a></div></div>
+  <div class="ft"><p>&copy; 2026 Gabucci Farm</p></div>
+</div>
+
+<!-- ══ PAGE: REKOMENDASI ══ -->
+<div class="page" id="page-reko">
+  <div class="ph"><div style="font-size:2.2rem;margin-bottom:.4rem">⭐</div><h1>Rekomendasi <span>Perlengkapan</span></h1><div class="pt">Senjata wajib olah daging qurban</div></div>
+  <div class="reko-section">
+    <div class="reko-intro"><h2>Siap Sambut Idul Adha! 🥩✨</h2><p>Daging qurban premium dari Gabucci Farm butuh perlakuan istimewa di dapur. Yuk siapkan perlengkapannya dari sekarang!</p></div>
+
+    <div class="reko-cat"><div class="reko-cat-header"><span>🔪</span><h3>Persiapan & Higienitas</h3></div><div class="reko-cat-desc">Jaga kebersihan daging dan pastikan pembagian porsi akurat sesuai syariat.</div>
+      <a href="https://s.shopee.co.id/5AoHJcCbeM" target="_blank" class="reko-item"><div class="ri-icon">🔪</div><div class="ri-text"><h4>Pisau Sapi Khusus</h4><p>Tajam & Presisi</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/9ztX4ZIzLR" target="_blank" class="reko-item"><div class="ri-icon">🪵</div><div class="ri-text"><h4>Talenan Kayu Tebal</h4><p>Stabil & Kokoh</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/2BAfkDBqkY" target="_blank" class="reko-item"><div class="ri-icon">🧤</div><div class="ri-text"><h4>Sarung Tangan Higienis</h4><p>Cegah Bakteri</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/3qItjKUYPB" target="_blank" class="reko-item"><div class="ri-icon">⚖️</div><div class="ri-text"><h4>Timbangan Dapur Digital</h4><p>Takar Porsi Adil</p></div><div class="ri-arrow">→</div></a>
+    </div>
+
+    <div class="reko-cat"><div class="reko-cat-header"><span>🍢</span><h3>Perlengkapan BBQ & Bumbu</h3></div><div class="reko-cat-desc">Semua yang dibutuhkan untuk tradisi sate yang lezat dan praktis.</div>
+      <a href="https://s.shopee.co.id/2VnW8uYxXj" target="_blank" class="reko-item"><div class="ri-icon">🔥</div><div class="ri-text"><h4>Alat Pemanggang</h4><p>Matang Merata</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/6L0EhypAln" target="_blank" class="reko-item"><div class="ri-icon">🏕️</div><div class="ri-text"><h4>Pemanggang Portable</h4><p>Praktis & Ringkas</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/4VYaWdlign" target="_blank" class="reko-item"><div class="ri-icon">🍢</div><div class="ri-text"><h4>Tusuk Sate Tebal</h4><p>Kuat Anti Patah</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/7AZLhasEK1" target="_blank" class="reko-item"><div class="ri-icon">🪨</div><div class="ri-text"><h4>Arang Berkualitas</h4><p>Panas Awet & Smokey</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/BPbMn440G" target="_blank" class="reko-item"><div class="ri-icon">🌶️</div><div class="ri-text"><h4>Bumbu Sate Maranggi</h4><p>Meresap Sempurna</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/5q3y7FYxdb" target="_blank" class="reko-item"><div class="ri-icon">📦</div><div class="ri-text"><h4>Bumbu Maranggi Instan</h4><p>Praktis Tanpa Ribet</p></div><div class="ri-arrow">→</div></a>
+      <a href="https://s.shopee.co.id/1qXpLz7xfT" target="_blank" class="reko-item"><div class="ri-icon">🥫</div><div class="ri-text"><h4>Kecap Less Sugar</h4><p>Pilihan Lebih Sehat</p></div><div class="ri-arrow">→</div></a>
+    </div>
+
+    <div class="reko-closing"><p>Jangan tunggu sampai mepet hari H! Checkout sekarang supaya ibadah qurban dan kumpul keluarga berjalan lancar, nikmat, dan berkah.</p><div class="rc-sign">Salam Sehat & Berkah — @dokrifqi | Gabucci Farm</div></div>
+  </div>
+  <div class="ft"><p>&copy; 2026 Gabucci Farm</p></div>
+</div>
+
+<!-- ══ PAGE: SUPPORT ══ -->
+<div class="page" id="page-support">
+  <div class="ph"><div style="font-size:2.2rem;margin-bottom:.4rem">💛</div><h1><span>Support</span> Kami</h1><div class="pt">Dukung Gabucci Farm dengan brand Anda</div></div>
+  <div class="support-section">
+    <div class="support-intro">
+      <h2>Jadikan Brand Anda Bagian dari Gabucci Farm</h2>
+      <p>Ingin memasang logo, nama, dan link brand Anda di halaman ini? Kami membuka kesempatan bagi brand yang ingin mendukung dan bersinergi bersama Gabucci Farm.</p>
+      <a href="https://lynk.id/dokrifqi" target="_blank" class="support-cta">🤝 Hubungi untuk Support</a>
+    </div>
+
+    <div class="stitle">Brand Partners<div class="sl"></div></div>
+    <div class="empty-brand">Slot tersedia — jadilah yang pertama mendukung Gabucci Farm! 🌟</div>
+
+    <!-- Template brand card (akan diisi saat ada sponsor)
+    <div class="brand-grid">
+      <div class="brand-card"><img src="logo-brand.jpg"><h4>Nama Brand</h4><p>Deskripsi singkat</p><a href="#">Kunjungi →</a></div>
+    </div>
+    -->
+  </div>
+  <div class="ft"><p>&copy; 2026 Gabucci Farm</p></div>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="modal" onclick="if(event.target===this)closeM()"><div class="ml"><div style="position:relative" id="mIW"></div><div class="ml-body"><h2 id="mN"></h2><div class="mid" id="mI"></div><div class="mspecs" id="mS"></div><div class="ml-desc" id="mD"></div><div class="cacts"><a id="mW" href="#" class="bwa">💬 WhatsApp</a></div></div></div></div>
+
+<!-- TAKBIR -->
+<button class="tkb" id="tkB" onclick="toggleT()">🔊</button>
+
+<script>
+const WA='6281370719873';
+const D=[
+{tag:"56",berat:975,estBerat:"995 - 1.005",harga:"Rp 110.000.000",hargaNum:110000000,ket:"Harga Tetap",kategori:"tetap",img:"tag-56.jpg"},
+{tag:"57",berat:822,estBerat:"842 - 852",harga:"Rp 69.044.000 - Rp 69.864.000",hargaNum:69044000,ket:"Kiloan",kategori:"kiloan",img:"tag-57.jpg"},
+{tag:"58",berat:704,estBerat:"724 - 734",harga:"Rp 59.368.000 - Rp 60.188.000",hargaNum:59368000,ket:"Kiloan",kategori:"kiloan",img:"tag-58.jpg"},
+{tag:"59",berat:710,estBerat:"730 - 740",harga:"Rp 59.860.000 - Rp 60.680.000",hargaNum:59860000,ket:"Kiloan",kategori:"kiloan",img:"tag-59.jpg"},
+{tag:"60",berat:460,estBerat:"480 - 490",harga:"Rp 43.000.000",hargaNum:43000000,ket:"Harga Tetap",kategori:"tetap",img:"tag-60.jpg"},
+{tag:"61",berat:379,estBerat:"399 - 409",harga:"Rp 37.000.000",hargaNum:37000000,ket:"Harga Tetap",kategori:"tetap",img:"tag-61.jpg"},
+{tag:"62",berat:513,estBerat:"533 - 543",harga:"Rp 43.706.000 - Rp 44.526.000",hargaNum:43706000,ket:"Kiloan",kategori:"kiloan",img:"tag-62.jpg"},
+{tag:"63",berat:497,estBerat:"517 - 527",harga:"Rp 42.394.000 - Rp 43.214.000",hargaNum:42394000,ket:"Kiloan",kategori:"kiloan",img:"tag-63.jpg"},
+{tag:"64",berat:520,estBerat:"540 - 550",harga:"Rp 44.280.000 - Rp 45.100.000",hargaNum:44280000,ket:"Kiloan",kategori:"kiloan",img:"tag-64.jpg"},
+{tag:"65",berat:545,estBerat:"565 - 575",harga:"TERJUAL",hargaNum:0,ket:"Terjual",kategori:"terjual",img:"tag-65.jpg"},
+{tag:"66",berat:548,estBerat:"568 - 578",harga:"Rp 46.576.000 - Rp 47.396.000",hargaNum:46576000,ket:"Kiloan",kategori:"kiloan",img:"tag-66.jpg"},
+{tag:"67",berat:499,estBerat:"519 - 529",harga:"Rp 42.558.000 - Rp 43.378.000",hargaNum:42558000,ket:"Kiloan",kategori:"kiloan",img:"tag-67.jpg"},
+{tag:"68",berat:408,estBerat:"428 - 438",harga:"Rp 37.000.000",hargaNum:37000000,ket:"Harga Tetap",kategori:"tetap",img:"tag-68.jpg"},
+{tag:"077",berat:229,estBerat:"249 - 259",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-077.jpg"},
+{tag:"078",berat:248,estBerat:"268 - 278",harga:"Rp 18.760.000 - Rp 19.460.000",hargaNum:18760000,ket:"Kiloan (Betina)",kategori:"kiloan",img:null},
+{tag:"079",berat:271,estBerat:"291 - 301",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-079.jpg"},
+{tag:"080",berat:275,estBerat:"295 - 305",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-080.jpg"},
+{tag:"081",berat:277,estBerat:"297 - 307",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-081.jpg"},
+{tag:"082",berat:286,estBerat:"306 - 316",harga:"TERJUAL",hargaNum:0,ket:"Terjual",kategori:"terjual",img:"tag-082.jpg"},
+{tag:"083",berat:353,estBerat:"373 - 383",harga:"Rp 28 jt - 33 jt",hargaNum:28000000,ket:"Jogrog",kategori:"jogrog",img:"tag-083.jpg"},
+{tag:"084",berat:315,estBerat:"335 - 345",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-084.jpg"},
+{tag:"085",berat:280,estBerat:"300 - 310",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-085.jpg"},
+{tag:"086",berat:306,estBerat:"326 - 336",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-086.jpg"},
+{tag:"087",berat:285,estBerat:"305 - 315",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-087.jpg"},
+{tag:"088",berat:342,estBerat:"362 - 372",harga:"Rp 28 jt - 33 jt",hargaNum:28000000,ket:"Jogrog",kategori:"jogrog",img:"tag-088.jpg"},
+{tag:"089",berat:323,estBerat:"343 - 353",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-089.jpg"},
+{tag:"090",berat:343,estBerat:"363 - 373",harga:"Rp 28 jt - 33 jt",hargaNum:28000000,ket:"Jogrog",kategori:"jogrog",img:"tag-090.jpg"},
+{tag:"092",berat:245,estBerat:"265 - 275",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-092.jpg"},
+{tag:"093",berat:342,estBerat:"362 - 372",harga:"Rp 28 jt - 33 jt",hargaNum:28000000,ket:"Jogrog",kategori:"jogrog",img:"tag-093.jpg"},
+{tag:"095",berat:277,estBerat:"297 - 307",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-095.jpg"},
+{tag:"098",berat:313,estBerat:"333 - 343",harga:"Rp 23 jt - 28 jt",hargaNum:23000000,ket:"Jogrog",kategori:"jogrog",img:"tag-098.jpg"},
+{tag:"071",berat:394,estBerat:"414 - 424",harga:"Rp 28.980.000 - Rp 29.680.000",hargaNum:28980000,ket:"Kiloan (Betina)",kategori:"kiloan",img:"tag-071.jpg"},
+{tag:"072",berat:410,estBerat:"430 - 440",harga:"Rp 30.100.000 - Rp 30.800.000",hargaNum:30100000,ket:"Kiloan (Betina)",kategori:"kiloan",img:"tag-072.jpg"},
+{tag:"073",berat:435,estBerat:"455 - 465",harga:"Rp 31.850.000 - Rp 32.550.000",hargaNum:31850000,ket:"Kiloan (Betina)",kategori:"kiloan",img:"tag-073.jpg"},
+{tag:"074",berat:367,estBerat:"387 - 397",harga:"Rp 27.090.000 - Rp 27.790.000",hargaNum:27090000,ket:"Kiloan (Betina)",kategori:"kiloan",img:"tag-074.jpg"},
+{tag:"075",berat:398,estBerat:"418 - 428",harga:"Rp 29.260.000 - Rp 29.960.000",hargaNum:29260000,ket:"Kiloan (Betina)",kategori:"kiloan",img:"tag-075.jpg"},
+{tag:"076",berat:403,estBerat:"423 - 433",harga:"Rp 29.610.000 - Rp 30.310.000",hargaNum:29610000,ket:"Kiloan (Betina)",kategori:"kiloan",img:"tag-076.jpg"},
+];
+
+function showP(p,el){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tab-item').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');el.classList.add('active');window.scrollTo(0,0)}
+
+let cf='semua',cs='',so='default';
+function badge(c){if(c.ket==='Terjual')return'<span class="cb cb-terjual">✕ Terjual</span>';let b='<span class="cb cb-'+c.kategori+'">'+(c.kategori==='kiloan'?'Kiloan':c.kategori==='tetap'?'Harga Tetap':'Jogrog')+'</span>';if(c.ket.includes('Betina'))b+='<span class="cb cb-betina">♀ Betina</span>';return b}
+
+function render(){
+  const g=document.getElementById('cG');
+  let f=cf==='semua'?[...D]:cf==='betina'?D.filter(c=>c.ket.includes('Betina')):D.filter(c=>c.kategori===cf);
+  if(cs)f=f.filter(c=>c.tag.includes(cs));
+  if(so==='low')f.sort((a,b)=>a.hargaNum-b.hargaNum);
+  else if(so==='high')f.sort((a,b)=>b.hargaNum-a.hargaNum);
+  else if(so==='heavy')f.sort((a,b)=>b.berat-a.berat);
+  document.getElementById('cB').textContent=`${f.length} dari ${D.length} sapi`;
+  if(!f.length){g.innerHTML='<div class="nores"><span>🔍</span>Tidak ditemukan</div>';return}
+  g.innerHTML=f.map(c=>`<div class="cow ${c.ket==='Terjual'?'cow-sold':''}"><div class="cow-img" onclick="openM('${c.tag}')">${c.img?`<img src="${c.img}" loading="lazy">`:`<div class="cow-noimg"><span>${c.ket.includes('Betina')?'🐄♀':'🐄'}</span>Foto segera</div>`}<div class="badges">${badge(c)}</div><div class="ctag">#${c.tag}</div></div><div class="cbody"><div class="ctop"><div class="cname">Sapi #${c.tag}</div><div class="cprice">${c.harga}</div></div><div class="cspecs"><div class="cs"><div class="csi">${c.ket.includes('Betina')?'♀️':'♂️'}</div><div class="cst"><span>Gender</span>${c.ket.includes('Betina')?'Betina':'Jantan'}</div></div><div class="cs"><div class="csi">⚖️</div><div class="cst"><span>Berat</span>${c.berat} kg</div></div></div><div class="cket">📋 ${c.ket}${c.ket==='Jogrog'?' — Harga di lokasi':c.ket==='Harga Tetap'?' — Harga pasti':c.ket.includes('Betina')?' — @Rp70rb/kg':c.ket==='Terjual'?'':' — Berat aktual H-1'}</div><div class="cacts"><a href="https://wa.me/${WA}?text=Halo%20Gabucci%20Farm,%20saya%20tertarik%20*Sapi%20%23${c.tag}*%20(${c.berat}kg)" class="bwa" onclick="event.stopPropagation()">💬 WA</a><button class="bdt" onclick="event.stopPropagation();openM('${c.tag}')">Detail</button></div></div></div>`).join('')}
+
+function fC(k,el){document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));el.classList.add('active');cf=k;render()}
+function sC(s,el){document.querySelectorAll('.sb').forEach(b=>b.classList.remove('active'));el.classList.add('active');so=s;render()}
+function searchC(){cs=document.getElementById('sI').value.trim();render()}
+
+function openM(t){const c=D.find(x=>x.tag===t);if(!c)return;document.getElementById('mIW').innerHTML=c.img?`<img class="ml-img" src="${c.img}"><button class="mcl" onclick="closeM()">✕</button>`:`<div class="ml-noimg">🐄</div><button class="mcl" onclick="closeM()">✕</button>`;document.getElementById('mN').textContent='Sapi #'+c.tag;document.getElementById('mI').textContent='#'+c.tag+' · '+c.ket;document.getElementById('mD').textContent=c.ket==='Terjual'?'Sapi ini sudah terjual.':c.ket==='Jogrog'?`Berat ${c.berat}kg. Est H-1: ${c.estBerat}kg. Jogrog — ${c.harga}.`:`Berat ${c.berat}kg. Est H-1: ${c.estBerat}kg. ${c.harga}.`;document.getElementById('mW').href=`https://wa.me/${WA}?text=Halo%20Gabucci%20Farm,%20tertarik%20*Sapi%20%23${c.tag}*%20(${c.berat}kg)`;document.getElementById('mS').innerHTML=`<div class="ms"><div class="msl">Berat</div><div class="msv">${c.berat}kg</div></div><div class="ms"><div class="msl">Est H-1</div><div class="msv">${c.estBerat}</div></div><div class="ms"><div class="msl">Kategori</div><div class="msv">${c.ket}</div></div>`;document.getElementById('modal').classList.add('active');document.body.style.overflow='hidden'}
+function closeM(){document.getElementById('modal').classList.remove('active');document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+
+let tp=false;const ta=new Audio('takbiran.mp3');ta.loop=true;
+function toggleT(){const b=document.getElementById('tkB');if(!tp){ta.play().catch(e=>{});b.classList.add('playing');b.textContent='⏸';tp=true}else{ta.pause();b.classList.remove('playing');b.textContent='🔊';tp=false}}
+
+render();
+</script>
+</body>
+</html>
